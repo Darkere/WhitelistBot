@@ -1,0 +1,27 @@
+plugins {
+    id'application'
+    id'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+mainClassName = 'com.darkere.whitelistbot.WhitelistBot'
+
+version '1.0'
+def jdaVersion = '5.0.0-alpha.12'
+
+sourceCompatibility = targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { // on kotlin dsl use `maven("https://m2.dv8tion.net/releases")` instead
+        url "https://m2.dv8tion.net/releases"
+    }
+}
+
+dependencies {
+    implementation("net.dv8tion:JDA:$jdaVersion")
+    implementation("ch.qos.logback:logback-classic:1.2.8")
+    implementation 'nl.vv32.rcon:rcon:1.2.0'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
+}
+
+compileJava.options.encoding = 'UTF-8'

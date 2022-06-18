@@ -1,0 +1,93 @@
+package com.darkere.whitelistbot;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Optional;
+
+public class UserDataHandler {
+
+    private static final String USER_DATA_FILE = "UserData.json";
+
+    public static void loadUserData(){
+        File file = new File(USER_DATA_FILE);
+        if(!file.exists())
+            return;
+        try {
+            String json = Files.readString(file.toPath());
+            WhitelistBot.BLOCKED_USERS = WhitelistBot.gson.fromJson(json,new TypeToken<ArrayList<UserData>>(){}.getType());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static boolean unblockUser(long id, Server server){
+        Optional<UserData> user = WhitelistBot.BLOCKED_USERS.stream().filter(u -> u.id == id).findFirst();
+        user.ifPresent(us -> {
+            us.AppliedServers.remove(server.Name);
+            us.DeniedServers.remove(server.Name);
+            us.AcceptedServers.remove(server.Name);
+            saveUserData();
+        });
+        return user.isPresent();
+    }
+
+    public static String getUserData(long id){
+        Optional<UserData> user = WhitelistBot.BLOCKED_USERS.stream().filter(u -> u.id == id).findFirst();
+        if(user.isEmpty())
+            return "";
+        return WhitelistBot.gson.toJson(user.get());
+    }
+
+    public static String getUserData(String name){
+        Optional<UserData> user = WhitelistBot.BLOCKED_USERS.stream().filter(u -> u.MCUsername == name).findFirst();
+        if(user.isEmpty())
+            return "";
+        return WhitelistBot.gson.toJson(user.get());
+    }
+
+    public static boolean hasAlreadyApplied(long id, String server){
+        Optional<UserData> user = WhitelistBot.BLOCKED_USERS.stream().filter(u -> u.id == id).findFirst();
+        if(user.isEmpty())
+            return false;
+        return user.get().AppliedServers.contains(server);
+    }
+
+    public static void addApplication(long id, String server, String MCName, boolean apply, boolean approved) {
+        Optional<UserData> user = WhitelistBot.BLOCKED_USERS.stream().filter(u -> u.id == id).findFirst();
+        user.ifPresentOrElse(us -> {
+            if(apply)
+                us.AppliedServers.add(server);
+            else if(approved)
+                us.AcceptedServers.add(server);
+            else
+                us.DeniedServers.add(server);
+            saveUserData();
+        },() -> {
+            UserData data = new UserData();
+            data.id = id;
+            data.MCUsername = MCName;
+            data.AppliedServers = new HashSet<>();
+            data.AppliedServers.add(server);
+            data.AcceptedServers = new HashSet<>();
+            data.DeniedServers = new HashSet<>();
+            WhitelistBot.BLOCKED_USERS.add(data);
+            saveUserData();
+        });
+    }
+
+    public static void saveUserData(){
+        File file = new File(USER_DATA_FILE);
+        try {
+            if(!file.exists())
+                file.createNewFile();
+            String json = WhitelistBot.gson.toJson(WhitelistBot.BLOCKED_USERS);
+            Files.writeString(file.toPath(),json);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
