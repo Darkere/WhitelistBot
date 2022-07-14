@@ -158,6 +158,7 @@ public class CommandListener extends ListenerAdapter {
 
             if (!Util.checkIfUserExists(name)) {
                 event.getHook().sendMessage("That Minecraft Username does not exist!" + " Your Message: " + event.getCommandString()).setEphemeral(true).queue();
+                return;
             }
 
             if (UserDataHandler.hasAlreadyApplied(user.getIdLong(), serverName)) {
