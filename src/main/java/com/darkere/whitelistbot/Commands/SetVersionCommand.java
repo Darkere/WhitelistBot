@@ -11,7 +11,7 @@ public class SetVersionCommand implements ICommand{
     public SlashCommandData registerCommand() {
         return makeCommand()
             .addOptions(CommandFunctions.getServerChoice(null))
-            .addOption(OptionType.STRING,"version","version to set the server to");
+            .addOption(OptionType.STRING,"version","version to set the server to", true);
     }
 
     @Override
@@ -29,7 +29,6 @@ public class SetVersionCommand implements ICommand{
         Server server = CommandFunctions.getServer(event);
         server.setVersion(event.getOption("version").getAsString());
         Util.updateStatusMessage(event.getJDA());
-
     }
 
     @Override

@@ -1,12 +1,12 @@
 package com.darkere.whitelistbot.Config;
 
-import com.darkere.whitelistbot.Util;
 import com.darkere.whitelistbot.WhitelistBot;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Config {
 
@@ -52,8 +52,8 @@ public class Config {
         config.GuildID = 123456789;
         config.ServerRole = 12346579;
         ServerData serverData = new ServerData();
-        config.serverData = new ArrayList<>();
-        config.serverData.add(serverData);
+        config.Servers = new ArrayList<>();
+        config.Servers.add(serverData);
         serverData.IP = "enigmatica.net";
         serverData.Name = "E2E";
         serverData.RconPassword = "password required for whitelisting, set in server.properties";
@@ -111,6 +111,10 @@ public class Config {
 
     public String getAcceptedText() {
         return data.AcceptedText;
+    }
+
+    public List<ServerData> GetServerData() {
+        return data.Servers;
     }
 }
 

@@ -12,7 +12,7 @@ public class UnblockCommand implements ICommand {
     @Override
     public SlashCommandData registerCommand() {
         return makeCommand()
-            .addOption(OptionType.USER, "name", "Discord Username", true, true)
+            .addOption(OptionType.USER, "name", "Discord Username", true, false)
             .addOptions(CommandFunctions.getServerChoice(null).setRequired(false));
     }
 

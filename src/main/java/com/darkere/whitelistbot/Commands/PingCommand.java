@@ -13,19 +13,18 @@ public class PingCommand implements ICommand{
 
     @Override
     public String getDescription() {
-        return null;
+        return "Ping a Server";
     }
 
     @Override
     public String getName() {
-        return null;
+        return "ping";
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         Server server = CommandFunctions.getServer(event);
-        String command = event.getOption("command").getAsString();
-        String answer = server.sendToServer(command);
+        String answer = server.sendToServer("list");
         event.getHook().sendMessage(answer.isEmpty() ? "Offline" : answer).setEphemeral(CommandFunctions.getShareResult(event)).queue();
     }
 

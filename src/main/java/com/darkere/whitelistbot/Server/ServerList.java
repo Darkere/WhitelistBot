@@ -1,5 +1,8 @@
 package com.darkere.whitelistbot.Server;
 
+import com.darkere.whitelistbot.Config.Config;
+import com.darkere.whitelistbot.Config.ServerData;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,15 @@ public class ServerList {
     public void forEachServer(Consumer<Server> Consumer){
         for (Server server : list) {
             Consumer.accept(server);
+        }
+    }
+
+    public void init() {
+        for (ServerData sdata : Config.get().GetServerData()) {
+            var server = new Server();
+            server.data = sdata;
+            System.out.println("Loaded Data for "+ sdata.DisplayName);
+            list.add(server);
         }
     }
 }

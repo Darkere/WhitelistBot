@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 public class ActivityCommand implements ICommand {
     @Override
     public SlashCommandData registerCommand() {
-        return makeCommand();
+        return makeCommand().addOptions(CommandFunctions.getShareOption());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ActivityCommand implements ICommand {
             answer.append(server.sendToServer("cu activity", "spark tps"));
             answer.append("\n");
         });
-        event.getHook().sendMessage(answer.toString()).setEphemeral(true).queue();
+        event.getHook().sendMessage(answer.isEmpty() ? "no answer" : answer.toString()).setEphemeral(CommandFunctions.getShareResult(event)).queue();
     }
 
     @Override

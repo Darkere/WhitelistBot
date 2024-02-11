@@ -5,10 +5,9 @@ plugins {
 
 mainClassName = 'com.darkere.whitelistbot.WhitelistBot'
 
-version '1.0'
+version '1.1'
 def jdaVersion = '5.0.0-alpha.12'
 
-sourceCompatibility = targetCompatibility = 1.8
 
 repositories {
     mavenCentral()

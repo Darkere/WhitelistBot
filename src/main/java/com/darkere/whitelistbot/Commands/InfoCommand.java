@@ -12,11 +12,11 @@ public class InfoCommand implements ICommand {
     public SlashCommandData registerCommand() {
         return makeCommand()
             .addSubcommands(
-                new SubcommandData("Minecraft", "Info about Minecraft User")
+                new SubcommandData("minecraft", "Info about Minecraft User")
                     .addOption(OptionType.STRING, "name", "Minecraft Username", true)
                     .addOptions(CommandFunctions.getShareOption()),
-                new SubcommandData("Discord", "Info about Discord User")
-                    .addOption(OptionType.USER, "name", "Discord Username", true, true)
+                new SubcommandData("discord", "Info about Discord User")
+                    .addOption(OptionType.USER, "name", "Discord Username", true, false)
                     .addOptions(CommandFunctions.getShareOption())
             );
     }
@@ -35,14 +35,14 @@ public class InfoCommand implements ICommand {
     public void execute(SlashCommandInteractionEvent event) {
         if(event.getSubcommandName() == null)
             return;
-        if (event.getSubcommandName().equals("Discord")) {
+        if (event.getSubcommandName().equals("discord")) {
             String data = UserDataHandler.getUserData(event.getOption("name").getAsUser().getIdLong());
             if (data.isEmpty()) {
                 event.getHook().sendMessage("User not found!").setEphemeral(CommandFunctions.getShareResult(event)).queue();
                 return;
             }
             event.getHook().sendMessage(data).setEphemeral(CommandFunctions.getShareResult(event)).queue();
-        } else if (event.getSubcommandName().equals("Minecraft")) {
+        } else if (event.getSubcommandName().equals("minecraft")) {
             String data = UserDataHandler.getUserData(event.getOption("name").getAsString());
             if (data.isEmpty()) {
                 event.getHook().sendMessage("User not found!").setEphemeral(CommandFunctions.getShareResult(event)).queue();

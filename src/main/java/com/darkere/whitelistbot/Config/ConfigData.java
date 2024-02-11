@@ -13,7 +13,7 @@ public class ConfigData {
     public long ServerRole;
 
     public long ModeratorRole;
-    public List<ServerData> serverData;
+    public List<ServerData> Servers;
 
     public String AcceptedText;
     public String RejectedText;

@@ -28,6 +28,7 @@ public class WhitelistBot {
         }
 
         Config.get().loadConfig();
+        ServerList.get().init();
         try {
             api = JDABuilder.createDefault(Config.get().getToken()).build().awaitReady();
         } catch (InterruptedException | LoginException e) {
@@ -52,6 +53,6 @@ public class WhitelistBot {
         api.getGuildById(Config.get().getGuildID()).upsertCommand(whitelistCommand.registerCommand());
     }
     public static ICommand getCommand(String name){
-        return Commands.stream().filter(command -> command.getName().equals("whitelist")).findAny().orElse(null);
+        return Commands.stream().filter(command -> command.getName().equals(name)).findAny().orElse(null);
     }
 }

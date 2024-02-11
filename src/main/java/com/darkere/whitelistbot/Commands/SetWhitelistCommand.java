@@ -29,6 +29,7 @@ public class SetWhitelistCommand implements ICommand{
         Server server = CommandFunctions.getServer(event);
         server.setWhitelist(event.getOption("open").getAsBoolean());
         WhitelistBot.UpdateWhitelistCommand();
+        event.reply("Whitelist changed").setEphemeral(true).queue();
     }
 
     @Override

@@ -7,12 +7,13 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import nl.vv32.rcon.Rcon;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Server {
 
 
-    Set<String> whitelist;
+    Set<String> whitelist = new HashSet<>();
 
     public ServerData data;
 

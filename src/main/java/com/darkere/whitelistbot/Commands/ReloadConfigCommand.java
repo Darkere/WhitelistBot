@@ -20,7 +20,7 @@ public class ReloadConfigCommand  implements ICommand {
 
     @Override
     public String getName() {
-        return "ReloadConfig";
+        return "reloadconfig";
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ReloadConfigCommand  implements ICommand {
         Config.get().loadConfig();
         UserDataHandler.loadUserData();
         ServerList.get().forEachServer(Server::loadWhitelist);
-        event.getHook().sendMessage("Reloaded").queue();
+        event.getHook().sendMessage("Reloaded").setEphemeral(true).queue();
     }
 
     @Override

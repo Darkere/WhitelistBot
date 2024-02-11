@@ -88,7 +88,7 @@ public class Util {
         List<MessageEmbed.Field> fields = new ArrayList<>();
         ServerList.get().forEachServer(server -> {
             String ip = "```fix\n" + server.getIP() + "\n```";
-            MessageEmbed.Field f = new MessageEmbed.Field((server.isWhitelistOpen() ? "OPEN" : "CLOSED") + " | " + server.getDisplayName() + " " + server.getVersion(),ip,false);
+            MessageEmbed.Field f = new MessageEmbed.Field((server.isWhitelistOpen() ? "OPEN" : "CLOSED") + " | " + server.getDisplayName() + " " + (server.getVersion() == null ? "" : server.getVersion()) ,ip,false);
             fields.add(f);
         });
         return new MessageEmbed("",

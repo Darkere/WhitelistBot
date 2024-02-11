@@ -31,12 +31,12 @@ public class WhitelistCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Apply for Whitelist";
     }
 
     @Override
     public String getName() {
-        return null;
+        return "whitelist";
     }
 
     @Override
