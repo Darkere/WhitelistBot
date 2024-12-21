@@ -5,9 +5,9 @@ import com.darkere.whitelistbot.Config.ServerData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
+
+import static com.darkere.whitelistbot.WhitelistBot.logger;
 
 public class ServerList {
     private static ServerList INSTANCE;
@@ -34,7 +34,7 @@ public class ServerList {
         for (ServerData sdata : Config.get().GetServerData()) {
             var server = new Server();
             server.data = sdata;
-            System.out.println("Loaded Data for "+ sdata.DisplayName);
+            logger.info("Loaded Data for "+ sdata.DisplayName);
             list.add(server);
         }
     }

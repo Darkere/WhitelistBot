@@ -27,7 +27,7 @@ public class PostCommand implements ICommand{
             event.getHook().sendMessage("Info Channel not found or unable to send to channel").queue();
             return;
         }
-        event.getHook().sendMessage("Message changed!").queue();
+        Util.sendWithLog(event.getHook().sendMessage("Message changed!"),event.getUser().getName() + " updated status message");
     }
 
     @Override

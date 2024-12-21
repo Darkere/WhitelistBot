@@ -4,6 +4,7 @@ import com.darkere.whitelistbot.Config.Config;
 import com.darkere.whitelistbot.Server.Server;
 import com.darkere.whitelistbot.Server.ServerList;
 import com.darkere.whitelistbot.UserDataHandler;
+import com.darkere.whitelistbot.Util;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
@@ -28,7 +29,7 @@ public class ReloadConfigCommand  implements ICommand {
         Config.get().loadConfig();
         UserDataHandler.loadUserData();
         ServerList.get().forEachServer(Server::loadWhitelist);
-        event.getHook().sendMessage("Reloaded").setEphemeral(true).queue();
+        Util.sendWithLog(event.getHook().sendMessage("Reloaded").setEphemeral(true),event.getUser(),"reloaded config");
     }
 
     @Override

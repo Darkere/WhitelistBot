@@ -1,6 +1,7 @@
 package com.darkere.whitelistbot.Commands;
 
 import com.darkere.whitelistbot.UserDataHandler;
+import com.darkere.whitelistbot.Util;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -38,17 +39,17 @@ public class InfoCommand implements ICommand {
         if (event.getSubcommandName().equals("discord")) {
             String data = UserDataHandler.getUserData(event.getOption("name").getAsUser().getIdLong());
             if (data.isEmpty()) {
-                event.getHook().sendMessage("User not found!").setEphemeral(CommandFunctions.getShareResult(event)).queue();
+                Util.send(event.getHook().sendMessage("User not found!"));
                 return;
             }
             event.getHook().sendMessage(data).setEphemeral(CommandFunctions.getShareResult(event)).queue();
         } else if (event.getSubcommandName().equals("minecraft")) {
             String data = UserDataHandler.getUserData(event.getOption("name").getAsString());
             if (data.isEmpty()) {
-                event.getHook().sendMessage("User not found!").setEphemeral(CommandFunctions.getShareResult(event)).queue();
+                Util.send(event.getHook().sendMessage("User not found!"));
                 return;
             }
-            event.getHook().sendMessage(data).setEphemeral(CommandFunctions.getShareResult(event)).queue();
+            Util.send(event.getHook().sendMessage(data));
         }
     }
 

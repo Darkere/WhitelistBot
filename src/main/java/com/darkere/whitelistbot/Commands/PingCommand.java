@@ -1,6 +1,7 @@
 package com.darkere.whitelistbot.Commands;
 
 import com.darkere.whitelistbot.Server.Server;
+import com.darkere.whitelistbot.Util;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
@@ -25,7 +26,7 @@ public class PingCommand implements ICommand{
     public void execute(SlashCommandInteractionEvent event) {
         Server server = CommandFunctions.getServer(event);
         String answer = server.sendToServer("list");
-        event.getHook().sendMessage(answer.isEmpty() ? "Offline" : answer).setEphemeral(CommandFunctions.getShareResult(event)).queue();
+        Util.send(event.getHook().sendMessage(answer.isEmpty() ? "Offline" : answer).setEphemeral(CommandFunctions.getShareResult(event)));
     }
 
     @Override

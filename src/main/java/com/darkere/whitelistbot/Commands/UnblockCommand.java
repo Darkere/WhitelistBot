@@ -2,6 +2,7 @@ package com.darkere.whitelistbot.Commands;
 
 import com.darkere.whitelistbot.Server.Server;
 import com.darkere.whitelistbot.UserDataHandler;
+import com.darkere.whitelistbot.Util;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -31,7 +32,7 @@ public class UnblockCommand implements ICommand {
         Server server = CommandFunctions.getServer(event);
         User user = event.getOptionsByType(OptionType.USER).get(0).getAsUser();
         boolean unbl = UserDataHandler.unblockUser(user.getIdLong(), server);
-        event.getHook().sendMessage(unbl ? "User has been unblocked" : "User was not found").queue();
+        Util.sendWithLog(event.getHook().sendMessage(unbl ? "User "+ user.getName() + " has been allowed to reapply to " + server : "User was not found"),event.getUser()," tried to unblock " + user.getName());
     }
 
     @Override

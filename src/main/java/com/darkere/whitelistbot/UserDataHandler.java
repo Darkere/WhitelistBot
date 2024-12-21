@@ -5,6 +5,7 @@ import com.darkere.whitelistbot.Config.UserData;
 import com.darkere.whitelistbot.Server.Server;
 import com.darkere.whitelistbot.Server.ServerList;
 import com.google.gson.reflect.TypeToken;
+import net.dv8tion.jda.api.entities.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,11 +62,16 @@ public class UserDataHandler {
         return WhitelistBot.gson.toJson(user.get());
     }
 
-    public static boolean hasAlreadyApplied(long id, String server){
-        Optional<UserData> user = BLOCKED_USERS.stream().filter(u -> u.id == id).findFirst();
-        if(user.isEmpty())
+    public static boolean hasAlreadyApplied(User user, String server){
+        Optional<UserData> FoundUser = BLOCKED_USERS.stream().filter(u -> u.id == user.getIdLong()).findFirst();
+        if(FoundUser.isEmpty())
             return false;
-        return user.get().AppliedServers.contains(server);
+        var found = FoundUser.get();
+        if(found.AppliedServers.contains(server)){
+            WhitelistBot.logger.info(user.getName() + " has already applied to " + server + " under the name " + found.MCUsername +  "! Used /unblock if they should be allowed to apply again");
+            return true;
+        }
+        return false;
     }
 
     public static void addApplication(long id, String server, String MCName, boolean apply, boolean approved) {

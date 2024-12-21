@@ -3,12 +3,14 @@ package com.darkere.whitelistbot.Server;
 import com.darkere.whitelistbot.Config.Config;
 import com.darkere.whitelistbot.Config.ServerData;
 import com.darkere.whitelistbot.Util;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import nl.vv32.rcon.Rcon;
 
 import java.io.IOException;
+import java.nio.channels.UnresolvedAddressException;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.darkere.whitelistbot.WhitelistBot.logger;
 
 public class Server {
 
@@ -20,33 +22,48 @@ public class Server {
     public String getName() {
         return data.Name;
     }
+    boolean connected = false;
+    Rcon rcon;
 
     public void ensureWhitelistLoaded() {
         if (whitelist.isEmpty())
             loadWhitelist();
     }
-
-    public String sendToServer(String... command) {
+    private boolean connectToServer() {
         String rconIP = data.IP;
         if (rconIP.contains(":")) {
             rconIP = rconIP.split(":")[0];
         }
-        try (Rcon rcon = Rcon.open(rconIP, Integer.parseInt(data.Rconport))) {
+        try {
+            rcon = Rcon.open(rconIP, Integer.parseInt(data.Rconport));
             if (rcon.authenticate(data.RconPassword)) {
-                System.out.println("Connected to " + data.Name);
-                StringBuilder builder = new StringBuilder();
-                for (String s : command) {
-                    builder.append(rcon.sendCommand(s));
-                    if (command.length > 1)
-                        builder.append("\n");
-                }
-                return builder.toString();
+                logger.info("Connected to " + data.Name);
+                connected = true;
+                return true;
             } else {
-                System.out.println("Failed to authenticate with " + data.Name);
+                logger.error("Failed to authenticate with " + data.Name);
             }
+        } catch (IOException | UnresolvedAddressException e) {
+            logger.debug("Unable to connect to RCon for " + data.Name + " at " + rconIP + ":" + data.Rconport,e);
+            logger.error("Unable to connect to RCon for " + data.Name + " at " + rconIP + ":" + data.Rconport + " " + e.getClass());
+        }
+        return false;
+    }
+    public String sendToServer(String command) {
+        return sendToServer(command, false);
+    }
+    public String sendToServer(String command, boolean retry) {
+       if(!connected)
+           if(!connectToServer())
+               return "";
+
+        try {
+            return rcon.sendCommand(command);
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Unable to connect to RCon for " + data.Name);
+            if(retry)
+                return "";
+            connected = false;
+            sendToServer(command,true);
         }
         return "";
     }
@@ -108,5 +125,13 @@ public class Server {
 
     public void addWhitelisted(String playerName) {
         whitelist.add(playerName);
+    }
+
+    public void Shutdown() {
+        try {
+            rcon.close();
+        } catch (IOException e) {
+            logger.error("error shutting down ",e);
+        }
     }
 }

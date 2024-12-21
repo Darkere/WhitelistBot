@@ -1,6 +1,7 @@
 package com.darkere.whitelistbot.Commands;
 
 import com.darkere.whitelistbot.Server.Server;
+import com.darkere.whitelistbot.Util;
 import com.darkere.whitelistbot.WhitelistBot;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -27,9 +28,11 @@ public class SetWhitelistCommand implements ICommand{
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         Server server = CommandFunctions.getServer(event);
-        server.setWhitelist(event.getOption("open").getAsBoolean());
+        var result = event.getOption("open").getAsBoolean();
+        server.setWhitelist(result);
         WhitelistBot.UpdateWhitelistCommand();
-        event.reply("Whitelist changed").setEphemeral(true).queue();
+        String reply = "Whitelist " + (result ? "opened" : "closed") + " for " + server;
+        Util.sendWithLog(event.reply(reply),event.getUser(),reply);
     }
 
     @Override

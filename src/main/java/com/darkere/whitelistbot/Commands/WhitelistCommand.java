@@ -4,15 +4,16 @@ import com.darkere.whitelistbot.Config.Config;
 import com.darkere.whitelistbot.Server.Server;
 import com.darkere.whitelistbot.UserDataHandler;
 import com.darkere.whitelistbot.Util;
+import com.darkere.whitelistbot.WhitelistBot;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -44,14 +45,14 @@ public class WhitelistCommand implements ICommand {
         User user = event.getUser();
         var server = CommandFunctions.getServer(event);
         String mcName = event.getOption("name").getAsString();
-
+        WhitelistBot.logger.info(user.getName()  + " is trying to apply with username " + mcName);
         if (!Util.checkIfUserExists(mcName)) {
-            event.getHook().sendMessage("That Minecraft Username does not exist!" + " Your Message: " + event.getCommandString()).setEphemeral(true).queue();
+            Util.sendWithLog(event.getHook().sendMessage("That Minecraft Username does not exist!" + " Your Message: " + event.getCommandString()).setEphemeral(true),"Failed because mc does not exist in database");
             return;
         }
 
-        if (UserDataHandler.hasAlreadyApplied(user.getIdLong(), server.getName())) {
-            event.getHook().sendMessage("You may only apply to a server once!").setEphemeral(true).queue();
+        if (UserDataHandler.hasAlreadyApplied(user, server.getName())) {
+            Util.sendWithLog(event.getHook().sendMessage("You may only apply to a server once!").setEphemeral(true),user," application denied due to already exists");
             return;
         } else {
             UserDataHandler.addApplication(user.getIdLong(), server.getName(), mcName, true, false);
@@ -60,7 +61,7 @@ public class WhitelistCommand implements ICommand {
         //load whitelist in case server was off during init
         server.ensureWhitelistLoaded();
         if(server.isWhitelisted(mcName)) {
-            event.getHook().sendMessage(server.getAlreadyWhitelistedText()).setEphemeral(true).queue();
+            Util.sendWithLog(event.getHook().sendMessage(server.getAlreadyWhitelistedText()).setEphemeral(true),user," application denied because " + mcName + " is already whitelisted");
             return;
         }
 
@@ -78,7 +79,7 @@ public class WhitelistCommand implements ICommand {
         MessageEmbed embed = new MessageEmbed("", "Application", user.getAsMention(), EmbedType.IMAGE, OffsetDateTime.now(), -1, null, null, null, null, null, new MessageEmbed.ImageInfo(avatarUrl, null, 50, 50), fields);
 
         channel.sendMessage("Application by " + user.getAsMention()).queue();
-        MessageAction messageAction = channel.sendMessageEmbeds(embed);
+        MessageCreateAction messageAction = channel.sendMessageEmbeds(embed);
         messageAction.setActionRow(Button.success("Success", "Approve"), Button.danger("Failure", "Deny"));
         messageAction.queue();
 
